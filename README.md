@@ -1,7 +1,7 @@
 - Hi, I’m @gSanzm
 - I’m interested in Machine learning and Big Data
 - I’m currently learning Big Data
-- I’m looking to collaborate on BIg Data proyects
+- I’m looking to collaborate on Big Data proyects
 - my email is gsanzmartin@uoc.es
 
 <!---
