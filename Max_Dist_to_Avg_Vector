@@ -1,0 +1,42 @@
+# Asemejamos df_workers a df_workers_original
+df_workers = df_workers_original.copy()
+
+
+def mdav(df, k=int, column=str):
+  """ 
+    Recibe un dataframe (df), un tamaño de clúster (k), y una columna sobre la que aplicar el cálculo (column).
+
+    Compara la distancia a la media del dataframe, localiza los valores más alejados de ella, los separa en un cluster,
+    obtiene la media (de la columna introducida como parámetro) de dicho clúster como representante del mismo, y lo aplica al
+    dataframe proporcionado como parámetro en la columna indicada.
+
+  """
+  df_mdav = df.copy()    # Hacemos una copia para ir obteniendo resultados en ella, y al final copiar
+                       # los resultados de esta en el original.
+
+  while len(df_mdav) >= k:
+    mean = df_mdav[column].mean()    # Obtenemos la media de la columna correspondiente.
+    
+    for index, row in df_mdav.iterrows():    #  Iteramos las filas del df de trabajo, obteniendo a cada iteración una tupla (índice:fila)
+      df_mdav.at[index,"distance_to_mean"] = abs(df_mdav.at[index, column] - mean)    # Creamos una nueva columna "distance_to_mean", a la
+                                                                                      # que le asignamos el valor absoluto de los valores
+                                                                                      # de la columna paramétrica menos la media en el
+                                                                                      # df de trabajo según su índice correspondiente.
+
+    cluster = df_mdav.sort_values("distance_to_mean").iloc[-k:]    # Obtenemos el clúster ordenando la lista según "distance_to_mean"
+                                                                   # y tomando los últimos k - 1  valores más cercanos a él.
+
+    for index, row in cluster.iterrows():
+      df.at[index, column] = cluster["age"].mean()
+      df_mdav.drop(index, inplace=True)
+
+  if len(df_mdav) < k:
+    for index, row in df_mdav.iterrows():
+      df.at[index, column] = df_mdav[column].mean()
+
+    
+  return df
+
+
+# Introducimos los parámetros de la función
+mdav(df_workers, 3, "age")
